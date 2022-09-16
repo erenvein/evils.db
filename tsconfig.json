@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+      "alwaysStrict": true,
+      "declaration": true,
+      "emitDecoratorMetadata": true,
+      "esModuleInterop": true,
+      "experimentalDecorators": true,
+      "importHelpers": true,
+      "importsNotUsedAsValues": "error",
+      "module": "commonjs",
+      "removeComments": false,
+      "resolveJsonModule": true,
+      "strict": true,
+      "target": "ES2020",
+      "useDefineForClassFields": true,
+      "rootDir": "src",
+      "outDir": "dist",
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "declarationDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "test/**/*"]
+}
