@@ -3,10 +3,11 @@ import { DatabaseError } from "./Error";
 import { SqliteDatabaseOptions } from "./Interface";
 import { join, sep, extname } from 'path';
 import { mkdirSync, existsSync } from 'fs';
+import { get, set, unset } from 'lodash';
 
 export class SqliteDatabase extends Database {
-    public SQLQuery: any;
-    public options: SqliteDatabaseOptions;
+    private SQLQuery: any;
+    private options: SqliteDatabaseOptions;
     public constructor(options: SqliteDatabaseOptions) {
         super();
 
@@ -39,14 +40,44 @@ export class SqliteDatabase extends Database {
     }
 
     public getAll() {
-        return this.SQLQuery.prepare(`SELECT * FROM ${this.options.table}`).all();
+        return this.cache;
     }
 
     public get(key: string) {
-        return this.SQLQuery.prepare(`SELECT * FROM ${this.options.table} WHERE key = ?`).get(key);
+        return get(this.cache, key);
     }
 
     public set(key: string, value: any) {
-        this.SQLQuery.prepare(`INSERT OR REPLACE INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(key, value);
+        let dotKey = key.split('.')[0];
+        let data = get(this.cache, dotKey);
+
+        set(this.cache, key, value);
+
+        if(data) {
+            if(key.includes('.')) {
+                set(this.cache, dotKey, data)
+                set(this.cache, key, value)
+
+                this.SQLQuery.prepare(`UPDATE ${this.options.table} SET value = ? WHERE key = ?`).run(JSON.stringify(data), dotKey);
+            } else {
+                this.SQLQuery.prepare(`UPDATE ${this.options.table} SET value = ? WHERE key = ?`).run(JSON.stringify(value), key);
+            }
+        } else {
+            if(key.includes('.')) {
+                this.SQLQuery.prepare(`INSERT INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(dotKey, JSON.stringify(value));
+            } else {
+                this.SQLQuery.prepare(`INSERT INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(key, JSON.stringify(value));
+            }
+        }
+
+        return value;
+
+
+    }
+
+    public remove(key: string) {
+        unset(this.cache, key);
+
+        this.SQLQuery.prepare(`DELETE FROM ${this.options.table} WHERE key = ?`).run(key);
     }
 }
