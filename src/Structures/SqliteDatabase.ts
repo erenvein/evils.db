@@ -1,6 +1,6 @@
 import { Database } from "./Database";
 import { DatabaseError } from "./Error";
-import { SqliteDatabaseOptions } from "./Interface";
+import type { SqliteDatabaseOptions } from "./Interface";
 import { join, sep, extname } from 'path';
 import { mkdirSync, existsSync } from 'fs';
 import { get, set, unset } from 'lodash';
