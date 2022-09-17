@@ -4,8 +4,8 @@ export interface SqliteDatabaseOptions {
 }
 
 export interface MongoDatabaseOptions {
-    url: string;
+    url?: string;
     collection: string;
     collectionName: string;
-    clientOptions: string;
+    clientOptions?: any;
 }

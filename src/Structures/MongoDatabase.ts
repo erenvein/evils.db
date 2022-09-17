@@ -1,4 +1,4 @@
-import { get, set } from "lodash";
+import { get, set, unset } from "lodash";
 import { Database } from "./Database";
 import { DatabaseError } from "./Error";
 import type { MongoDatabaseOptions } from "./Interface";
@@ -33,12 +33,12 @@ export class MongoDatabase extends Database {
 
         this.options = options;
         this.collectionName = options.collectionName;
-        this.connection = mongoClient.createConnection(
-            this.options.url,
-            this.options.clientOptions
-        );
-
+        this.connection = mongoClient.createConnection(this.options.url, this.options.clientOptions)
         this.collection = this.connection.model(this.options.collectionName, schema);
+
+        async() => {
+            await this.setAll();
+        }
     }
 
     public async set(key: string, value: any) {
@@ -74,4 +74,53 @@ export class MongoDatabase extends Database {
     public get(key: string) {
         return get(this.cache, key);
     }
+
+    public async remove(key: string) {
+        unset(this.cache, key);
+
+        if(key.includes('.')) {
+            let dotKey = key.split('.')[0];
+            await this.set(dotKey, get(this.cache, dotKey))
+        } else {
+            await this.collection.deleteOne({ key })
+        }
+    }
+
+    public async getAll() {
+        return this.cache;
+    }
+
+    
+    public async setAll() {
+        let data = await this.collection.find();
+        for (const item of data) {
+            set(this.cache, item.key, item.value)
+        }
+        return this.cache;
+    }
+
+    public async push(key: string, value: any) {
+        let data = get(this.cache, key);
+        if(!data) data = [];
+        data.push(value);
+        await this.set(key, data);
+        return data;
+    }
+
+    public async pull(key: string, value: any) {
+        let data = get(this.cache, key);
+        if(!data) data = [];
+        data = data.filter((x: any) => x !== value);
+        await this.set(key, data);
+        return data;
+    }
+
+    public async add(key: string, value: any) {
+        let data = get(this.cache, key);
+        if(!data) data = 0;
+        data += value;
+        await this.set(key, data);
+        return data;
+    }
+
 }
