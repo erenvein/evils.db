@@ -24,10 +24,14 @@ export class MongoDatabase extends Database {
         let schema = new mongoClient.Schema({
             key: {
                 type: mongoClient.Schema.Types.String,
+                unique: true,
+                required: true
             },
             
             value: {
-                type: mongoClient.Schema.Types.Mixed
+                type: mongoClient.Schema.Types.Mixed,
+                unique: true,
+                required: true
             }
         });
 
