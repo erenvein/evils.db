@@ -3,7 +3,7 @@
 
 ## Versions
 ![Image](https://img.shields.io/npm/v/evils.db)
-
+![Image](https://img.shields.io/npm/dt/evils.db)
 ![Image](https://nodei.co/npm/evils.db.png)
 
 ## Features
