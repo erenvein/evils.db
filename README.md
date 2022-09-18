@@ -13,8 +13,8 @@
 
 ## Examples
 
-# Typescript
-```typescript
+# ES6
+```javascript
 import { MongoDatabase } from 'evils.db';
 
 const db = new MongoDatabase({

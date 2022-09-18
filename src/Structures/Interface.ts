@@ -9,3 +9,15 @@ export interface MongoDatabaseOptions {
     collectionName: string;
     clientOptions?: any;
 }
+
+export interface YamlDatabaseOptions {
+    filePath: string;
+}
+
+export interface JsonDatabaseOptions {
+    filePath: string;
+}
+
+export interface BsonDatabaseOptions {
+    filePath: string;
+}
