@@ -80,4 +80,40 @@ export class SqliteDatabase extends Database {
 
         this.SQLQuery.prepare(`DELETE FROM ${this.options.table} WHERE key = ?`).run(key);
     }
+
+    public add(key: string, value: number) {
+        let data = this.get(key);
+
+        if (typeof data !== 'number') throw new DatabaseError(`Cannot add "${value}" to "${key}" because "${key}" is not a number.`);
+
+        data += value;
+
+        this.set(key, data);
+
+        return data;
+    }
+
+    public push(key: string, value: any) {
+        let data = this.get(key);
+
+        if (!Array.isArray(data)) throw new DatabaseError(`Cannot push "${value}" to "${key}" because "${key}" is not an array.`);
+
+        data.push(value);
+
+        this.set(key, data);
+
+        return data;
+    }
+
+    public pull(key: string, value: any) {
+        let data = this.get(key);
+
+        if (!Array.isArray(data)) throw new DatabaseError(`Cannot pull "${value}" from "${key}" because "${key}" is not an array.`);
+
+        data = data.filter((v: any) => v !== value);
+
+        this.set(key, data);
+
+        return data;
+    }
 }

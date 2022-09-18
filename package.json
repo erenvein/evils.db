@@ -1,6 +1,6 @@
 {
   "name": "evils.db",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -8,11 +8,9 @@
     "build": "tsc",
     "start": "npm run build"
   },
-
   "repository": {
     "url": "https://github.com/evilsdev/evils.db"
   },
-
   "author": "evilsdev",
   "keywords": [
     "quick.db",
