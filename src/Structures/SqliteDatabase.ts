@@ -116,4 +116,44 @@ export class SqliteDatabase extends Database {
 
         return data;
     }
+
+    public clear() {
+        this.cache = {};
+
+        this.SQLQuery.prepare(`DELETE FROM ${this.options.table}`).run();
+    }
+
+    public close() {
+        this.SQLQuery.close();
+    }
+
+    public async init() {
+        let data = this.SQLQuery.prepare(`SELECT * FROM ${this.options.table}`).all();
+
+        for (const row of data) {
+            this.cache[row.key] = JSON.parse(row.value);
+        }
+    }
+
+    public async save() {
+        for (const key in this.cache) {
+            let data = this.cache[key];
+
+            if (typeof data === 'object') data = JSON.stringify(data);
+
+            this.SQLQuery.prepare(`UPDATE ${this.options.table} SET value = ? WHERE key = ?`).run(data, key);
+        }
+    }
+
+    public async destroy() {
+        this.SQLQuery.prepare(`DROP TABLE ${this.options.table}`).run();
+    }
+
+    public async delete() {
+        this.SQLQuery.close();
+        this.SQLQuery = undefined;
+    }
+
+
+
 }

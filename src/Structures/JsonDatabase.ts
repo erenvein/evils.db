@@ -38,7 +38,7 @@ export class JsonDatabase extends Database {
 
     public set(key: string, value: any) {
         set(this.cache, key, value);
-        writeFileSync(this.options.filePath, this.json.stringify(this.cache));
+        writeFileSync(this.options.filePath, JSON.stringify(this.cache, null, 1 ?? 4));
         return value;
     }
 
@@ -53,13 +53,13 @@ export class JsonDatabase extends Database {
     public delete(key: string) {
         const value = get(this.cache, key);
         delete this.cache[key];
-        writeFileSync(this.options.filePath, this.json.stringify(this.cache));
+        writeFileSync(this.options.filePath, JSON.stringify(this.cache, null, 1 ?? 4));
         return value;
     }
 
     public clear() {
         this.cache = {};
-        writeFileSync(this.options.filePath, this.json.stringify(this.cache));
+        writeFileSync(this.options.filePath, JSON.stringify(this.cache, null, 1 ?? 4));
         return this.cache;
     }
 
