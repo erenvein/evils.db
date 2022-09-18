@@ -49,31 +49,30 @@ export class SqliteDatabase extends Database {
 
     public set(key: string, value: any) {
         let dotKey = key.split('.')[0];
+
         let data = get(this.cache, dotKey);
 
         set(this.cache, key, value);
 
         if(data) {
             if(key.includes('.')) {
-                set(this.cache, dotKey, data)
-                set(this.cache, key, value)
-
+                let data = get(this.cache, dotKey);
                 this.SQLQuery.prepare(`UPDATE ${this.options.table} SET value = ? WHERE key = ?`).run(JSON.stringify(data), dotKey);
             } else {
                 this.SQLQuery.prepare(`UPDATE ${this.options.table} SET value = ? WHERE key = ?`).run(JSON.stringify(value), key);
             }
         } else {
             if(key.includes('.')) {
-                this.SQLQuery.prepare(`INSERT INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(dotKey, JSON.stringify(value));
+                let data = get(this.cache, dotKey);
+                this.SQLQuery.prepare(`INSERT INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(dotKey, JSON.stringify(data));
             } else {
                 this.SQLQuery.prepare(`INSERT INTO ${this.options.table} (key, value) VALUES (?, ?)`).run(key, JSON.stringify(value));
             }
         }
 
         return value;
-
-
     }
+
 
     public remove(key: string) {
         unset(this.cache, key);
