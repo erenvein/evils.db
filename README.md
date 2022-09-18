@@ -10,6 +10,9 @@
 
 - Mongodb support
 - Sqlite support
+- Yaml support
+- Json support
+- Bson support
 
 ## Examples
 
